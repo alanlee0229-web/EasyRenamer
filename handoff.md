@@ -2,36 +2,34 @@
 
 ## 当前目标
 
-PS-05.5 Open Source License Freeze 已完成实现、本机验收、提交和推送；PR #7 待评审，不自动合并。
+PS-06 Public RC / Release Packaging 已完成本机冻结与验收；当前分支 `release/v1.0.0-rc`，待中文提交、推送并创建 PR，不自动合并。
 
 ## 权威信息
 
-- 基线：`main` 提交 `bad2661`，已包含合并后的 PS-03B。
+- 基线：`main` 提交 `a42b5a887a7e79580473291614fac3a64825d3ab`，已包含合并后的 PS-05.5。
 - 项目许可证：Apache License 2.0；SPDX：`Apache-2.0`。
 - 远程仓库：https://github.com/alanlee0229-web/EasyRenamer.git
 - 正式约束：`BatchRenamer_V1_Authoritative_Freeze_20260830_DualFlavor_Update.md`。
-- 当前任务：PS-05.5 Open Source License Freeze。
+- 当前任务：PS-06 Public RC / Release Packaging。
 
 ## 当前状态
 
-- 根目录 `LICENSE` 与 Apache 官方 `LICENSE-2.0.txt` 完全同字节：11,358 bytes，SHA256 `CFC7749B96F63BD31C3C42B5C471BF756814053E847C10F3EB003417BC523D30`。
-- README 明确 `License: Apache-2.0` 并链接根 LICENSE；第三方依赖不因本项目许可证而被重新授权。
-- 仓库原先没有根级 LICENSE / NOTICE；本轮未编造 NOTICE。
-- 应用直接外部依赖：WPF-UI 4.3.0（MIT）；传递依赖：WPF-UI.Abstractions 4.3.0（MIT）。
-- WPF-UI NuGet 包附带 `LICENSE.md` 与 `ThirdPartyNotices.txt`，后者列出四项 MIT notice 和 Segoe Fluent Icons Font 的 Microsoft Platform 使用/禁止再分发条款。
-- PS-06 / PS-07 打包必须从实际锁定的 WPF-UI 4.3.0 包原样保留这两个上游文件，并确认不独立分发 Segoe 字体文件；PS-05.5 不复制、改写未知 notice，不修改打包配置。
-- Markdown 21 个本地链接 PASS；Public 严格构建 0/0；Smoke 510 PASS / Skip 0；Public Purity 与 Negative Control PASS。
-- Production / Transaction Core 文件变更 0；语义变化 NONE；UI、构建、发布配置变更 0。
-- PS-05.5 实现提交：`6bfff83`；PR：https://github.com/alanlee0229-web/EasyRenamer/pull/7。
-- 详细审查见 `docs/PS055_LICENSE_FREEZE.md`。
+- 唯一 RC：`BatchRenamer-v1.0.0-RC1`；路径：`artifacts/release/v1.0.0-rc1/`；这是 PS-07 的冻结输入。
+- Canonical Public Profile：COMPACT；win-x64、self-contained、single-file、compression enabled、ReadyToRun false、trimming false；SDK `10.0.400`。
+- Public strict build 0/0；Smoke 510 PASS / Skip 0；Public Purity 与 Negative Control PASS。
+- EXE metadata、Public identity 和 PE 图标 PASS；Approved ICO SHA256 `467DF074F455504261CE35B7B8F0B5494A575DB8EEE41084F8515F3AB97306D1`；Authenticode UNSIGNED。
+- ZIP 原样包含 Apache-2.0 LICENSE、WPF-UI 4.3.0 notices 及两个 WPF-UI license；没有单独 Segoe 字体文件或开发/内部内容。
+- EXE SHA256：`7745D6FAFA48ABBE8D2789EE1E2E071D7FA3183F6FECBD5A5B552E4D21690702`；ZIP SHA256：`9FA2C33A6D4B3339FD763FB4077F1FD9374DF3DB4846BFFB276808C847D0DECB`。
+- `SHA256SUMS_SELF_VERIFY`、两轮重读、`RC_FREEZE` 均 PASS；完整 snapshot 见 `docs/PS06_PUBLIC_RC.md`。
+- Production / Transaction Core 文件变更 0；语义变化与 second mutation path NONE。
 
 ## 固定决策
 
-- 项目原始作品许可证固定为 Apache-2.0，不改为 MIT / GPL / AGPL。
-- 第三方组件保留各自许可证与 notice，根 Apache-2.0 不覆盖第三方授权。
-- Release-Public 与 Release-Internal 继续共用正式 ICO；Canonical Public Publish Profile 继续为 Compact。
-- Git 提交、分支和 PR 文案使用中文；不直接推送 `main`；不自动合并 PS-05.5；不创建正式 Release。
+- RC1 五个文件 bytes 已冻结；PS-07 只能重读验证，不得 rebuild、repackage、改名、签名或修改。
+- 若任何 artifact bytes 漂移，PS-07 必须 `BLOCKED_ARTIFACT_DRIFT`，返回 PS-06 创建 RC2，禁止覆盖 RC1。
+- 正式 EXE/ZIP 不提交 Git；Draft Release 延后 PS-07，正式 Release 仍为 NO。
+- Git 提交、分支和 PR 文案使用中文；不直接推送 `main`；不自动合并 PS-06。
 
 ## 下一步
 
-完成 PS-05.5 PR 评审与合并后，进入 PS-06 Public RC / Release Packaging。本文只保留最新状态与关键决策。
+提交 release infrastructure 与文档并创建 PS-06 PR；合并后由 PS-07 首先运行 `python tools\verify_frozen_rc.py`。本文只保留最新状态与关键决策。

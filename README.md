@@ -103,4 +103,4 @@ D:\DATA\tpredict\python.exe tools\validate_repository_docs.py
 
 `DEMO_GIF_STATUS = PENDING` — the reserved path is `docs/assets/demo.gif`, sourced only from a real application recording.
 
-`ICON_ASSET_STATUS = PENDING` — no final logo or icon is claimed. See [Release Identity / Branding](docs/PS03_RELEASE_IDENTITY.md) for the approved integration boundary.
+`APP_ICON_STATUS = APPROVED_AND_INTEGRATED` — Release-Public and Release-Internal use the same approved Windows icon. See [Release Identity / Branding](docs/PS03_RELEASE_IDENTITY.md). `ICON_ASSET_STATUS = PENDING` applies only to the separate website-facing `icon-512.png`, which is not substituted with an unapproved derivative.

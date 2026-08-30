@@ -8,6 +8,7 @@
     <AssemblyName>BatchRenamer</AssemblyName>
     <RootNamespace>BatchRenamer.App</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\BatchRenamer.ico</ApplicationIcon>
     <PlatformTarget>x64</PlatformTarget>
     <BatchRenamerExternalVersion>1.0.0</BatchRenamerExternalVersion>
     <BatchRenamerFileVersion>1.0.0.0</BatchRenamerFileVersion>
@@ -53,6 +54,7 @@
   </Target>
 
   <ItemGroup>
+    <Resource Include="Assets\BatchRenamer.ico" />
     <PackageReference Include="WPF-UI" Version="4.3.0" />
     <ProjectReference Include="..\BatchRenamer.Core\BatchRenamer.Core.csproj" />
     <ProjectReference Include="..\BatchRenamer.FileSystem\BatchRenamer.FileSystem.csproj" />

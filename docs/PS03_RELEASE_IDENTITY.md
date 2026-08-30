@@ -20,15 +20,13 @@ powershell -ExecutionPolicy Bypass -File tools\verify_public_build.ps1
 
 默认 Gate 自动检查 Public 与 Internal 的 ProductName、FileDescription、FileVersion、ProductVersion、BuildFlavor、程序集身份、Internal QA 存在性以及 Public 隔离，并保留 PS-02 Negative Control。
 
-## 正式图标接入边界
-
-当前仓库没有用户批准的正式 `.ico`，因此：
+## 正式图标
 
 ```text
-ICON_ASSET_STATUS = PENDING
+ICON_ASSET_STATUS = APPROVED_AND_INTEGRATED
 ```
 
-不得用历史预览 PNG 或临时生成图标冒充正式资产。最终资产批准后固定放置于 `src/BatchRenamer.App/Assets/BatchRenamer.ico`，至少包含 16、24、32、48、64、128、256 像素图层；随后在项目文件设置 `ApplicationIcon`，并将同一资源用于 WPF 主窗口 `Icon`，统一 EXE、Explorer、Taskbar、Alt+Tab 与窗口图标。
+单一权威资源为 `src/BatchRenamer.App/Assets/BatchRenamer.ico`，SHA256 为 `467DF074F455504261CE35B7B8F0B5494A575DB8EEE41084F8515F3AB97306D1`。ICO 包含 16、24、32、48、64、128、256 像素的 32-bit PNG 图层。项目通过 `ApplicationIcon` 接入 EXE / Explorer executable resource，并将同一 WPF Resource 用作主窗口 `Icon`，统一 Window、Taskbar 与 Alt+Tab 图标。Release-Public 与 Release-Internal 共用该资源，身份差异继续由冻结的标题和 metadata 表达。
 
 ## Hash 规则
 

@@ -2,7 +2,7 @@
 
 ## 当前目标
 
-PS-05 Fast vs Compact Portable Benchmark 已完成实现与本机验收；当前分支为 `productization/ps05-fast-vs-compact`，待中文提交、推送并创建 PR，不自动合并。
+PS-05 Fast vs Compact Portable Benchmark 已完成实现与本机验收；当前分支为 `productization/ps05-fast-vs-compact`，PR #5 待评审，不自动合并。
 
 ## 权威信息
 
@@ -24,6 +24,7 @@ PS-05 Fast vs Compact Portable Benchmark 已完成实现与本机验收；当前
 - PS-05 qualification hash 已写入 `docs/PS05_FAST_VS_COMPACT_BENCHMARK.md`，明确不是最终 Release hash。
 - Product / Transaction Core 文件变更 0；语义变更 NONE；第二 mutation path NONE。
 - 原始 benchmark EXE、ZIP、CSV、JSON 留在被忽略的 `artifacts/benchmarks/ps05/`，不得提交或上传 Release。
+- PS-05 实现提交：`3e9cdbd`；PR：https://github.com/alanlee0229-web/EasyRenamer/pull/5。
 
 ## 固定决策
 
@@ -34,4 +35,4 @@ PS-05 Fast vs Compact Portable Benchmark 已完成实现与本机验收；当前
 
 ## 下一步
 
-提交并创建 PS-05 PR；合并后进入 PS-06 Public RC / Release Packaging。本文只保留最新状态与关键决策。
+完成 PS-05 PR 后进入 PS-06 Public RC / Release Packaging。本文只保留最新状态与关键决策。

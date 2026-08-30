@@ -8,6 +8,8 @@ import sys
 import zipfile
 from pathlib import Path
 
+from portable_profiles import CANONICAL_PUBLIC_PROFILE, PORTABLE_PROFILES, msbuild_property_args
+
 
 def sha256(path: Path) -> str:
     h = hashlib.sha256()
@@ -20,6 +22,11 @@ def sha256(path: Path) -> str:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Build BatchRenamer self-contained win-x64 portable release.")
     parser.add_argument("--flavor", choices=("public", "internal"), default="public", help="Build flavor (default: public).")
+    parser.add_argument(
+        "--profile",
+        choices=tuple(PORTABLE_PROFILES),
+        help=f"Portable profile (Public default: {CANONICAL_PUBLIC_PROFILE}; Internal default: compact).",
+    )
     parser.add_argument("--no-zip", action="store_true", help="Do not create the portable ZIP.")
     parser.add_argument("--allow-warnings", action="store_true", help="Do not promote compiler warnings to errors (diagnostic only; not for release).")
     args = parser.parse_args()
@@ -27,6 +34,7 @@ def main() -> int:
     repo = Path(__file__).resolve().parents[1]
     project = repo / "src" / "BatchRenamer.App" / "BatchRenamer.App.csproj"
     flavor = args.flavor
+    profile = args.profile or (CANONICAL_PUBLIC_PROFILE if flavor == "public" else "compact")
     configuration = "Release-Public" if flavor == "public" else "Release-Internal"
     output = repo / "artifacts" / "portable" / flavor / "win-x64"
     package_dir = repo / "artifacts" / "packages"
@@ -43,18 +51,13 @@ def main() -> int:
         "-c", configuration,
         "-r", "win-x64",
         "--self-contained", "true",
-        "-p:PublishSingleFile=true",
-        "-p:PublishTrimmed=false",
-        "-p:PublishReadyToRun=false",
-        "-p:IncludeNativeLibrariesForSelfExtract=true",
-        "-p:EnableCompressionInSingleFile=true",
-        "-p:DebugType=None",
-        "-p:DebugSymbols=false",
+        *msbuild_property_args(profile),
         "-o", str(output),
     ]
     if not args.allow_warnings:
         cmd.insert(-2, "-p:TreatWarningsAsErrors=true")
 
+    print(f"[profile] {profile}")
     print("[publish]", " ".join(cmd))
     try:
         subprocess.run(cmd, check=True, cwd=repo)

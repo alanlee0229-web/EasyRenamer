@@ -9,9 +9,11 @@
     <RootNamespace>BatchRenamer.App</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <PlatformTarget>x64</PlatformTarget>
-    <Version>1.0.0</Version>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.0.0.0</FileVersion>
+    <BatchRenamerExternalVersion>1.0.0</BatchRenamerExternalVersion>
+    <BatchRenamerFileVersion>1.0.0.0</BatchRenamerFileVersion>
+    <Version>$(BatchRenamerExternalVersion)</Version>
+    <AssemblyVersion>$(BatchRenamerFileVersion)</AssemblyVersion>
+    <FileVersion>$(BatchRenamerFileVersion)</FileVersion>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
 
@@ -19,14 +21,14 @@
     <Product>BatchRenamer Internal Test</Product>
     <AssemblyTitle>BatchRenamer Internal Test</AssemblyTitle>
     <Description>easy重命名内部测试版本</Description>
-    <InformationalVersion>1.0.0-internal</InformationalVersion>
+    <InformationalVersion>$(BatchRenamerExternalVersion)-internal</InformationalVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(BatchRenamerBuildFlavor)' == 'Public'">
     <Product>easy重命名 / BatchRenamer</Product>
-    <AssemblyTitle>easy重命名</AssemblyTitle>
+    <AssemblyTitle>easy重命名 / BatchRenamer</AssemblyTitle>
     <Description>安全、现代的 Windows 批量重命名工具</Description>
-    <InformationalVersion>1.0.0</InformationalVersion>
+    <InformationalVersion>$(BatchRenamerExternalVersion)</InformationalVersion>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(BatchRenamerBuildFlavor)' != 'Internal'">

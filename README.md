@@ -104,3 +104,9 @@ D:\DATA\tpredict\python.exe tools\validate_repository_docs.py
 `DEMO_GIF_STATUS = PENDING` — the reserved path is `docs/assets/demo.gif`, sourced only from a real application recording.
 
 `APP_ICON_STATUS = APPROVED_AND_INTEGRATED` — Release-Public and Release-Internal use the same approved Windows icon. See [Release Identity / Branding](docs/PS03_RELEASE_IDENTITY.md). `ICON_ASSET_STATUS = PENDING` applies only to the separate website-facing `icon-512.png`, which is not substituted with an unapproved derivative.
+
+## License
+
+**License: Apache-2.0**
+
+The original work in this repository is licensed under the [Apache License 2.0](LICENSE). Third-party dependencies remain under their respective licenses and are not relicensed by this project.

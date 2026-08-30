@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions and ideas / 一般问题与想法
+    url: https://github.com/alanlee0229-web/EasyRenamer/discussions
+    about: Use Discussions after the repository owner enables and configures it.
+  - name: Private security report / 私有安全报告
+    url: https://github.com/alanlee0229-web/EasyRenamer/security/advisories/new
+    about: Report exploitable file-safety or boundary-bypass vulnerabilities privately.
+  - name: Support and privacy guidance / 支持与隐私说明
+    url: https://github.com/alanlee0229-web/EasyRenamer/blob/main/SUPPORT.md
+    about: Choose the correct form and redact private filenames and paths.

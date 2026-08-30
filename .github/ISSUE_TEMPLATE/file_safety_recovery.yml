@@ -1,0 +1,82 @@
+name: File Safety / Recovery Problem
+description: Report rename, recovery, rollback, or undo states that may affect file safety.
+title: "[File Safety] "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Stop before attempting more moves. 不要上传私人文件；不要公开敏感文件名/路径；请使用 A.txt、B.txt 等中性名称。Recovery 异常时不要继续随意移动相关文件，也不要删除事务目录或日志。
+  - type: input
+    id: version
+    attributes:
+      label: Version and build flavor
+      placeholder: 1.0.0 / Release-Public
+    validations:
+      required: true
+  - type: input
+    id: windows
+    attributes:
+      label: Windows version
+      placeholder: Windows 11 24H2
+    validations:
+      required: true
+  - type: dropdown
+    id: operation
+    attributes:
+      label: Operation
+      options:
+        - Execute rename
+        - Startup recovery
+        - Rollback
+        - Undo
+        - Unknown
+    validations:
+      required: true
+  - type: dropdown
+    id: current_state
+    attributes:
+      label: Current application state
+      options:
+        - Recovery required
+        - Manual action required
+        - Session busy
+        - Operation failed
+        - Application closed or crashed
+        - Other or unknown
+    validations:
+      required: true
+  - type: textarea
+    id: neutral_layout
+    attributes:
+      label: Neutral Source / Temp / Target layout
+      description: Replace every real name and path with neutral examples. State which neutral objects currently exist.
+      placeholder: |
+        Source: C:\NeutralTest\A.txt (missing/present)
+        Temp: C:\NeutralTest\.batchrenamer-temp-... (missing/present)
+        Target: C:\NeutralTest\B.txt (missing/present)
+    validations:
+      required: true
+  - type: textarea
+    id: actions
+    attributes:
+      label: Actions already taken
+      description: Include retries or manual moves, but do not attempt new actions just to fill this field.
+    validations:
+      required: true
+  - type: textarea
+    id: redacted_evidence
+    attributes:
+      label: Redacted messages or evidence
+      description: Paste only fully redacted text. Never upload private directories or original personal files.
+  - type: checkboxes
+    id: safety_stop
+    attributes:
+      label: Safety confirmation
+      options:
+        - label: I stopped repeated rename/recovery/undo attempts.
+          required: true
+        - label: I did not delete the transaction directory or journal.
+          required: true
+        - label: I replaced private filenames and paths with neutral examples.
+          required: true

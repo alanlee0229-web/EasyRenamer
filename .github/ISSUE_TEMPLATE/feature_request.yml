@@ -1,0 +1,47 @@
+name: Feature Request
+description: Propose a user-facing improvement without presenting planned work as implemented.
+title: "[Feature] "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please describe the problem first. Check docs/ROADMAP.md for capabilities that are already planned.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: What user workflow is difficult today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed outcome
+      description: Describe behavior, not an internal implementation mandate.
+    validations:
+      required: true
+  - type: dropdown
+    id: risk
+    attributes:
+      label: Expected change area
+      options:
+        - Documentation or repository
+        - UI or non-mutation behavior
+        - Rules, preview, or planner
+        - Transaction, recovery, or undo
+        - Unsure
+    validations:
+      required: true
+  - type: textarea
+    id: safety
+    attributes:
+      label: Safety and compatibility considerations
+      description: Could this affect paths, preview accuracy, mutation, recovery, or existing workflows?
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope confirmation
+      options:
+        - label: I understand a roadmap entry is planned work, not a promise that the feature already exists.
+          required: true

@@ -1,0 +1,64 @@
+name: Bug Report
+description: Report a reproducible product defect that is not a file-safety emergency.
+title: "[Bug] "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting a bug. Do not upload private files or expose sensitive filenames and paths. Use neutral examples.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: ProductVersion shown in file properties, for example 1.0.0.
+      placeholder: 1.0.0
+    validations:
+      required: true
+  - type: dropdown
+    id: build_flavor
+    attributes:
+      label: Build flavor
+      options:
+        - Release-Public
+        - Release-Internal
+        - Unknown
+    validations:
+      required: true
+  - type: input
+    id: windows
+    attributes:
+      label: Windows version
+      placeholder: Windows 11 24H2
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      description: Use neutral filenames such as A.txt and Photo_001.jpg.
+      placeholder: |
+        1. Import A.txt
+        2. Configure ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy confirmation
+      options:
+        - label: I removed private files, sensitive filenames, personal paths, and unredacted logs.
+          required: true

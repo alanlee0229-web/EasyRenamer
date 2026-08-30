@@ -2,7 +2,7 @@
 
 ## 当前目标
 
-PS-05.5 Open Source License Freeze 已完成实现与本机验收；当前分支为 `productization/ps055-license`，待中文提交、推送并创建 PR，不自动合并。
+PS-05.5 Open Source License Freeze 已完成实现、本机验收、提交和推送；PR #7 待评审，不自动合并。
 
 ## 权威信息
 
@@ -22,6 +22,7 @@ PS-05.5 Open Source License Freeze 已完成实现与本机验收；当前分支
 - PS-06 / PS-07 打包必须从实际锁定的 WPF-UI 4.3.0 包原样保留这两个上游文件，并确认不独立分发 Segoe 字体文件；PS-05.5 不复制、改写未知 notice，不修改打包配置。
 - Markdown 21 个本地链接 PASS；Public 严格构建 0/0；Smoke 510 PASS / Skip 0；Public Purity 与 Negative Control PASS。
 - Production / Transaction Core 文件变更 0；语义变化 NONE；UI、构建、发布配置变更 0。
+- PS-05.5 实现提交：`6bfff83`；PR：https://github.com/alanlee0229-web/EasyRenamer/pull/7。
 - 详细审查见 `docs/PS055_LICENSE_FREEZE.md`。
 
 ## 固定决策
@@ -33,4 +34,4 @@ PS-05.5 Open Source License Freeze 已完成实现与本机验收；当前分支
 
 ## 下一步
 
-提交并创建 PS-05.5 PR；合并后进入 PS-06 Public RC / Release Packaging。本文只保留最新状态与关键决策。
+完成 PS-05.5 PR 评审与合并后，进入 PS-06 Public RC / Release Packaging。本文只保留最新状态与关键决策。

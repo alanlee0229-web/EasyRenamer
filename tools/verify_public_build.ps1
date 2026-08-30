@@ -12,6 +12,7 @@ $project = Join-Path $repo "src\BatchRenamer.App\BatchRenamer.App.csproj"
 $inspectorProject = Join-Path $repo "tools\BatchRenamer.PublicPurityInspector\BatchRenamer.PublicPurityInspector.csproj"
 $reportPath = Join-Path $repo "artifacts\gates\public_build_purity.json"
 $expectedProduct = "easy" + [char]0x91CD + [char]0x547D + [char]0x540D + " / BatchRenamer"
+$expectedInternalProduct = "BatchRenamer Internal Test"
 $results = [ordered]@{
     BuildFlavor = "NOT_RUN"
     CompileIsolation = "NOT_RUN"
@@ -20,6 +21,7 @@ $results = [ordered]@{
     InternalResourcesAbsent = "NOT_RUN"
     InternalDependenciesAbsent = "NOT_RUN"
     PublicIdentity = "NOT_RUN"
+    InternalIdentity = "NOT_RUN"
     PublishDirectory = "NOT_RUN"
     NegativeControl = "NOT_RUN"
 }
@@ -35,7 +37,7 @@ function Resolve-RepoPath([string]$Path) {
 }
 
 function Get-MsBuildEvidence([string]$BuildConfiguration) {
-    $output = & dotnet msbuild $project "-p:Configuration=$BuildConfiguration" -getProperty:BatchRenamerBuildFlavor -getItem:Compile -getItem:Resource -getItem:EmbeddedResource -getItem:Page -getItem:Content -getItem:None -getItem:ProjectReference 2>&1
+    $output = & dotnet msbuild $project "-p:Configuration=$BuildConfiguration" -getProperty:BatchRenamerBuildFlavor -getProperty:AssemblyName -getProperty:RootNamespace -getProperty:Product -getProperty:AssemblyTitle -getProperty:Version -getProperty:AssemblyVersion -getProperty:FileVersion -getProperty:InformationalVersion -getItem:Compile -getItem:Resource -getItem:EmbeddedResource -getItem:Page -getItem:Content -getItem:None -getItem:ProjectReference 2>&1
     if ($LASTEXITCODE -ne 0) { Fail-Gate "MSBUILD_INSPECTION" ($output -join [Environment]::NewLine) }
     try { return (($output -join [Environment]::NewLine) | ConvertFrom-Json) }
     catch { Fail-Gate "MSBUILD_INSPECTION" "MSBuild evidence was not valid JSON: $($_.Exception.Message)" }
@@ -61,6 +63,23 @@ function Assert-PublicArtifact([string]$BuildConfiguration, [string]$PublishPath
     }
     $results.BuildFlavor = "PASS"
 
+    $publicMetadata = [ordered]@{
+        AssemblyName = "BatchRenamer"
+        RootNamespace = "BatchRenamer.App"
+        Product = $expectedProduct
+        AssemblyTitle = $expectedProduct
+        Version = "1.0.0"
+        AssemblyVersion = "1.0.0.0"
+        FileVersion = "1.0.0.0"
+        InformationalVersion = "1.0.0"
+    }
+    foreach ($entry in $publicMetadata.GetEnumerator()) {
+        $actual = [string]$msbuild.Properties.($entry.Key)
+        if ($actual -cne $entry.Value) {
+            Fail-Gate "PUBLIC_IDENTITY" "MSBuild $($entry.Key) expected '$($entry.Value)'; actual '$actual'."
+        }
+    }
+
     $itemNames = @("Compile", "Resource", "EmbeddedResource", "Page", "Content", "None", "ProjectReference")
     foreach ($itemName in $itemNames) {
         $items = @($msbuild.Items.$itemName)
@@ -81,9 +100,9 @@ function Assert-PublicArtifact([string]$BuildConfiguration, [string]$PublishPath
     if (-not (Test-Path -LiteralPath $assembly -PathType Leaf)) {
         Fail-Gate "ASSEMBLY_INSPECTION" "Expected build assembly does not exist: $assembly"
     }
-    $inspectorOutput = & dotnet run --project $inspectorProject -c Release -- $assembly 2>&1
+    $inspectorOutput = & dotnet run --project $inspectorProject -c Release -- $assembly public 2>&1
     $inspectorText = $inspectorOutput -join [Environment]::NewLine
-    if ($LASTEXITCODE -ne 0 -or $inspectorText -notmatch "PUBLIC_ASSEMBLY_METADATA = PASS") {
+    if ($LASTEXITCODE -ne 0 -or $inspectorText -notmatch "RELEASE_ASSEMBLY_METADATA = PASS") {
         Fail-Gate "ASSEMBLY_INSPECTION" $inspectorText
     }
     $results.InternalTypesAbsent = "PASS"
@@ -93,14 +112,20 @@ function Assert-PublicArtifact([string]$BuildConfiguration, [string]$PublishPath
     $evidence.Assembly = $assembly
 
     $versionInfo = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($files[0].FullName)
-    if ($versionInfo.ProductName -cne $expectedProduct -or $versionInfo.ProductVersion -cne "1.0.0") {
-        Fail-Gate "PUBLIC_IDENTITY" "Expected '$expectedProduct' / 1.0.0; actual '$($versionInfo.ProductName)' / '$($versionInfo.ProductVersion)'."
+    if ($files[0].Name -cne "BatchRenamer.exe" -or
+        $versionInfo.ProductName -cne $expectedProduct -or
+        $versionInfo.FileDescription -cne $expectedProduct -or
+        $versionInfo.FileVersion -cne "1.0.0.0" -or
+        $versionInfo.ProductVersion -cne "1.0.0") {
+        Fail-Gate "PUBLIC_IDENTITY" "Public file identity mismatch: '$($files[0].Name)' / '$($versionInfo.ProductName)' / '$($versionInfo.FileDescription)' / '$($versionInfo.FileVersion)' / '$($versionInfo.ProductVersion)'."
     }
     if ($versionInfo.ProductName -match "Internal|INTERNAL TEST" -or $versionInfo.ProductVersion -match "internal") {
         Fail-Gate "PUBLIC_IDENTITY" "Internal identity marker detected."
     }
     $results.PublicIdentity = "PASS"
     $evidence.ProductName = $versionInfo.ProductName
+    $evidence.FileDescription = $versionInfo.FileDescription
+    $evidence.FileVersion = $versionInfo.FileVersion
     $evidence.ProductVersion = $versionInfo.ProductVersion
 }
 
@@ -131,10 +156,51 @@ try {
         if (-not (Test-Path -LiteralPath $internalExe -PathType Leaf)) {
             Fail-Gate "NEGATIVE_CONTROL_SETUP" "Internal control artifact does not exist: $internalExe"
         }
-        $internalIdentity = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($internalExe)
-        if ($internalIdentity.ProductName -cne "BatchRenamer Internal Test" -or $internalIdentity.ProductVersion -cne "1.0.0-internal") {
-            Fail-Gate "NEGATIVE_CONTROL_SETUP" "Internal control identity is invalid: '$($internalIdentity.ProductName)' / '$($internalIdentity.ProductVersion)'."
+        $internalFiles = @(Get-ChildItem -LiteralPath $internalPublish -Recurse -File)
+        if ($internalFiles.Count -ne 1 -or $internalFiles[0].Name -cne "BatchRenamer.exe") {
+            Fail-Gate "NEGATIVE_CONTROL_SETUP" "Internal single-file contract is invalid: $($internalFiles.FullName -join ', ')"
         }
+        $internalMsbuild = Get-MsBuildEvidence "Release-Internal"
+        $internalMetadata = [ordered]@{
+            BatchRenamerBuildFlavor = "Internal"
+            AssemblyName = "BatchRenamer"
+            RootNamespace = "BatchRenamer.App"
+            Product = $expectedInternalProduct
+            AssemblyTitle = $expectedInternalProduct
+            Version = "1.0.0"
+            AssemblyVersion = "1.0.0.0"
+            FileVersion = "1.0.0.0"
+            InformationalVersion = "1.0.0-internal"
+        }
+        foreach ($entry in $internalMetadata.GetEnumerator()) {
+            $actual = [string]$internalMsbuild.Properties.($entry.Key)
+            if ($actual -cne $entry.Value) {
+                Fail-Gate "NEGATIVE_CONTROL_SETUP" "Internal MSBuild $($entry.Key) expected '$($entry.Value)'; actual '$actual'."
+            }
+        }
+        $internalIdentity = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($internalExe)
+        if ($internalIdentity.ProductName -cne $expectedInternalProduct -or
+            $internalIdentity.FileDescription -cne $expectedInternalProduct -or
+            $internalIdentity.FileVersion -cne "1.0.0.0" -or
+            $internalIdentity.ProductVersion -cne "1.0.0-internal") {
+            Fail-Gate "NEGATIVE_CONTROL_SETUP" "Internal control identity is invalid: '$($internalIdentity.ProductName)' / '$($internalIdentity.FileDescription)' / '$($internalIdentity.FileVersion)' / '$($internalIdentity.ProductVersion)'."
+        }
+
+        $internalAssembly = Join-Path $repo "src\BatchRenamer.App\bin\Release-Internal\net10.0-windows\win-x64\BatchRenamer.dll"
+        if (-not (Test-Path -LiteralPath $internalAssembly -PathType Leaf)) {
+            Fail-Gate "NEGATIVE_CONTROL_SETUP" "Internal build assembly does not exist: $internalAssembly"
+        }
+        $internalInspectorOutput = & dotnet run --project $inspectorProject -c Release -- $internalAssembly internal 2>&1
+        $internalInspectorText = $internalInspectorOutput -join [Environment]::NewLine
+        if ($LASTEXITCODE -ne 0 -or $internalInspectorText -notmatch "RELEASE_ASSEMBLY_METADATA = PASS") {
+            Fail-Gate "NEGATIVE_CONTROL_SETUP" $internalInspectorText
+        }
+        $results.InternalIdentity = "PASS"
+        $evidence.InternalProductName = $internalIdentity.ProductName
+        $evidence.InternalFileDescription = $internalIdentity.FileDescription
+        $evidence.InternalFileVersion = $internalIdentity.FileVersion
+        $evidence.InternalProductVersion = $internalIdentity.ProductVersion
+        $evidence.InternalQaRegression = "InternalQaCenterWindow and InternalTools_PreviewKeyDown present."
 
         $engine = (Get-Process -Id $PID).Path
         $negativeOutput = & $engine -NoProfile -ExecutionPolicy Bypass -File $PSCommandPath -Configuration "Release-Internal" -PublishDirectory $internalPublish -PositiveOnly -ProbeOnly 2>&1

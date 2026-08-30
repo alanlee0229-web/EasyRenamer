@@ -2,7 +2,7 @@
 
 ## 当前目标
 
-PS-06 Public RC / Release Packaging 已完成本机冻结与验收；当前分支 `release/v1.0.0-rc`，待中文提交、推送并创建 PR，不自动合并。
+PS-06 Public RC / Release Packaging 已完成本机冻结、验收、提交和推送；PR #8 待评审，不自动合并。
 
 ## 权威信息
 
@@ -22,6 +22,7 @@ PS-06 Public RC / Release Packaging 已完成本机冻结与验收；当前分�
 - EXE SHA256：`7745D6FAFA48ABBE8D2789EE1E2E071D7FA3183F6FECBD5A5B552E4D21690702`；ZIP SHA256：`9FA2C33A6D4B3339FD763FB4077F1FD9374DF3DB4846BFFB276808C847D0DECB`。
 - `SHA256SUMS_SELF_VERIFY`、两轮重读、`RC_FREEZE` 均 PASS；完整 snapshot 见 `docs/PS06_PUBLIC_RC.md`。
 - Production / Transaction Core 文件变更 0；语义变化与 second mutation path NONE。
+- PS-06 实现提交：`a62bcf5`；PR：https://github.com/alanlee0229-web/EasyRenamer/pull/8。
 
 ## 固定决策
 
@@ -32,4 +33,4 @@ PS-06 Public RC / Release Packaging 已完成本机冻结与验收；当前分�
 
 ## 下一步
 
-提交 release infrastructure 与文档并创建 PS-06 PR；合并后由 PS-07 首先运行 `python tools\verify_frozen_rc.py`。本文只保留最新状态与关键决策。
+完成 PS-06 PR #8 评审与合并后，由 PS-07 首先运行 `python tools\verify_frozen_rc.py`。本文只保留最新状态与关键决策。

@@ -90,6 +90,22 @@ def main() -> int:
         print(f"[ok] portable package: {zip_path}")
         print(f"[ok] package SHA256: {sha256(zip_path)}")
 
+    if flavor == "public":
+        gate = [
+            "powershell", "-NoProfile", "-ExecutionPolicy", "Bypass",
+            "-File", str(repo / "tools" / "verify_public_build.ps1"),
+            "-PositiveOnly",
+        ]
+        print("[purity]", " ".join(gate))
+        try:
+            subprocess.run(gate, check=True, cwd=repo)
+        except FileNotFoundError:
+            print("ERROR: Windows PowerShell was not found; Public purity was not verified.", file=sys.stderr)
+            return 4
+        except subprocess.CalledProcessError as exc:
+            print(f"ERROR: Public purity gate failed with exit code {exc.returncode}.", file=sys.stderr)
+            return exc.returncode or 1
+
     return 0
 
 

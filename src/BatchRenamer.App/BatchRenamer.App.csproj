@@ -12,6 +12,7 @@
     <Version>1.0.0</Version>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(BatchRenamerBuildFlavor)' == 'Internal'">
@@ -32,8 +33,22 @@
     <Compile Remove="InternalTools\**\*.cs" />
     <EmbeddedResource Remove="InternalTools\**\*" />
     <Resource Remove="InternalTools\**\*" />
+    <Page Remove="InternalTools\**\*" />
+    <Content Remove="InternalTools\**\*" />
     <None Remove="InternalTools\**\*" />
   </ItemGroup>
+
+  <Target Name="ValidatePublicBuildPurityInputs"
+          BeforeTargets="CoreCompile"
+          Condition="'$(BatchRenamerBuildFlavor)' == 'Public'">
+    <Error Condition="$([System.String]::Copy('@(Compile)').Contains('InternalTools'))" Text="Public Compile items must not contain InternalTools." />
+    <Error Condition="$([System.String]::Copy('@(Resource)').Contains('InternalTools'))" Text="Public Resource items must not contain InternalTools." />
+    <Error Condition="$([System.String]::Copy('@(EmbeddedResource)').Contains('InternalTools'))" Text="Public EmbeddedResource items must not contain InternalTools." />
+    <Error Condition="$([System.String]::Copy('@(Page)').Contains('InternalTools'))" Text="Public Page items must not contain InternalTools." />
+    <Error Condition="$([System.String]::Copy('@(Content)').Contains('InternalTools'))" Text="Public Content items must not contain InternalTools." />
+    <Error Condition="$([System.String]::Copy('@(None)').Contains('InternalTools'))" Text="Public None items must not contain InternalTools." />
+    <Error Condition="$([System.String]::Copy('@(ProjectReference)').Contains('InternalTools'))" Text="Public ProjectReference items must not contain InternalTools." />
+  </Target>
 
   <ItemGroup>
     <PackageReference Include="WPF-UI" Version="4.3.0" />

@@ -2,7 +2,7 @@
 
 ## 当前目标
 
-PS-03B Final App Icon Integration 已完成实现与本机验收；当前分支为 `productization/ps03b-final-app-icon`，待中文提交、推送并创建 PR，不自动合并。
+PS-03B Final App Icon Integration 已完成实现与本机验收；当前分支为 `productization/ps03b-final-app-icon`，PR #6 待评审，不自动合并。
 
 ## 权威信息
 
@@ -25,6 +25,7 @@ PS-03B Final App Icon Integration 已完成实现与本机验收；当前分支�
 - Qualification hashes 已写入 `docs/PS03B_FINAL_APP_ICON.md`，明确不是最终 Release hash。
 - Transaction Core diff NONE；语义变化 NONE；第二 mutation path NONE。
 - EXE、ZIP、`bin/obj`、`artifacts` 和本地批准输入包均不提交。
+- PS-03B 实现提交：`3ee234a`；PR：https://github.com/alanlee0229-web/EasyRenamer/pull/6。
 
 ## 固定决策
 
@@ -36,4 +37,4 @@ PS-03B Final App Icon Integration 已完成实现与本机验收；当前分支�
 
 ## 下一步
 
-提交并创建 PS-03B PR；合并后进入 PS-06 Public RC / Release Packaging。本文只保留最新状态与关键决策。
+完成 PS-03B PR 后进入 PS-06 Public RC / Release Packaging。本文只保留最新状态与关键决策。

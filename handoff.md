@@ -25,6 +25,7 @@ PS-01 Internal QA Center 已实现并通过本地 Gate；成果位于 `productiz
 - Internal / Public 单文件发布：PASS；产物身份和版本元数据已分离。
 - `PUBLIC_BUILD_PURITY = PASS`：Public 编译项和 publish 目录均不含 InternalTools。
 - `main` 已固定在 PS-00 PASS commit `33a7bcd`；当前分支为 `productization/ps01-internal-qa-center`。
+- PS-01 提交：`421e339`；PR：https://github.com/alanlee0229-web/EasyRenamer/pull/1（待评审，未合并）。
 - `Shift+Ctrl+P` 已改为打开 Internal-only QA Center；原 `Shift+Ctrl+D/T` 保留。
 - Quick Smoke、Demo Data、20k Preview、事务准备检查、2k 命令/结构化结果均已收编。
 - QA Workspace 固定在 `%TEMP%\BatchRenamer\InternalQA`，Cleanup 校验固定路径、ownership marker 与 reparse point。

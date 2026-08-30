@@ -2,7 +2,7 @@
 
 ## 当前目标
 
-执行 PS-00：同一权威源码建立 `Release-Internal` 与 `Release-Public`，Internal 保留 QA，Public 编译级排除 InternalTools；不修改 Transaction Core 语义。
+PS-01 Internal QA Center 已实现并通过本地 Gate；成果位于 `productization/ps01-internal-qa-center`，Transaction Core 语义未修改。
 
 ## 权威信息
 
@@ -24,6 +24,12 @@
 - Internal 2,000 个真实文件 Execute / Startup Gate / Undo / Idempotence：PASS，沙箱已清理。
 - Internal / Public 单文件发布：PASS；产物身份和版本元数据已分离。
 - `PUBLIC_BUILD_PURITY = PASS`：Public 编译项和 publish 目录均不含 InternalTools。
+- `main` 已固定在 PS-00 PASS commit `33a7bcd`；当前分支为 `productization/ps01-internal-qa-center`。
+- PS-01 提交：`421e339`；PR：https://github.com/alanlee0229-web/EasyRenamer/pull/1（待评审，未合并）。
+- `Shift+Ctrl+P` 已改为打开 Internal-only QA Center；原 `Shift+Ctrl+D/T` 保留。
+- Quick Smoke、Demo Data、20k Preview、事务准备检查、2k 命令/结构化结果均已收编。
+- QA Workspace 固定在 `%TEMP%\BatchRenamer\InternalQA`，Cleanup 校验固定路径、ownership marker 与 reparse point。
+- PS-01 完整 SmokeTests、2,000 文件真实压力测试、Public publish/purity：PASS；Temp 残留 0。
 
 ## 固定决策
 
@@ -34,4 +40,4 @@
 
 ## 下一步
 
-审查 Git diff，以中文提交到 `productization/ps00-dual-flavor` 并推送远程仓库；随后进入 PS-01。只维护最新状态和关键决策，不追加流水日志。
+PS-01 后续仅处理评审反馈；主路线进入 PS-02 Public Build Purity Gate。只维护最新状态和关键决策，不追加流水日志。

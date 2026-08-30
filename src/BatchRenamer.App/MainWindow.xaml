@@ -1,0 +1,610 @@
+<ui:FluentWindow x:Class="BatchRenamer.App.MainWindow"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                 mc:Ignorable="d"
+                 Title="easy重命名"
+                 Width="1380" Height="860"
+                 MinWidth="1120" MinHeight="720"
+                 WindowStartupLocation="CenterScreen"
+                 ExtendsContentIntoTitleBar="True"
+                 AllowDrop="True"
+                 DragOver="Window_DragOver"
+                 Drop="Window_Drop"
+                 PreviewKeyDown="Window_PreviewKeyDown"
+                 PreviewMouseDown="Window_PreviewMouseDown"
+                 Closed="Window_Closed">
+    <Grid Background="{StaticResource AppBackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="44" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <ui:TitleBar x:Name="AppTitleBar" Grid.Row="0" Title="easy重命名" />
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="64" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Narrow desktop navigation -->
+            <Border Grid.Column="0" Background="White" BorderBrush="{StaticResource HairlineBrush}" BorderThickness="0,0,1,0">
+                <Grid>
+                    <StackPanel VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,18,0,0">
+                        <Button Content="✦" Style="{StaticResource NavSelectedButtonStyle}" ToolTip="批量重命名" />
+                    </StackPanel>
+                    <Button Content="⚙" Style="{StaticResource NavButtonStyle}" ToolTip="设置" Click="Settings_Click" IsEnabled="{Binding IsWorkspaceEnabled}"
+                            VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,14" />
+                </Grid>
+            </Border>
+
+            <Grid Grid.Column="1" IsEnabled="{Binding IsWorkspaceEnabled}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="108" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="54" />
+                </Grid.RowDefinitions>
+
+                <!-- Page header -->
+                <Grid Grid.Row="0" Margin="24,18,24,12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="批量重命名" FontSize="24" FontWeight="SemiBold" Foreground="{StaticResource StrongTextBrush}" />
+                        <TextBlock Text="调整顺序、设置规则，并在执行前检查最终名称。"
+                                   FontSize="12.5" Foreground="{StaticResource MutedTextBrush}" Margin="0,6,0,0" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button Content="清空" Style="{StaticResource HeaderGhostButtonStyle}" Click="Clear_Click" />
+                        <Button Content="添加文件夹" Style="{StaticResource BaseButtonStyle}" Margin="8,0,0,0" Click="AddFolder_Click" />
+                        <Button Content="＋  添加文件" Style="{StaticResource PrimaryButtonStyle}" Margin="8,0,0,0" Click="AddFiles_Click" />
+                    </StackPanel>
+                </Grid>
+
+                <!-- Workspace -->
+                <Grid Grid.Row="1" Margin="24,0,24,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" MinWidth="620" />
+                        <ColumnDefinition Width="14" />
+                        <ColumnDefinition Width="372" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- File table card -->
+                    <Border Grid.Column="0" Style="{StaticResource CardStyle}" ClipToBounds="True">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="56" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0" Margin="14,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="220" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBox x:Name="SearchBox" Style="{StaticResource SearchTextBoxStyle}"
+                                         Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}"
+                                         ToolTip="搜索原名称、新名称或来源目录" />
+
+                                <CheckBox Grid.Column="1" Content="只看问题" Margin="14,0,0,0" VerticalAlignment="Center"
+                                          IsChecked="{Binding ShowIssuesOnly, Mode=TwoWay}" />
+
+                                <Border Grid.Column="4" Grid.ColumnSpan="3" Style="{StaticResource ToolbarSurfaceStyle}" Margin="10,0,0,0" VerticalAlignment="Center">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Style="{StaticResource ToolbarIconButtonStyle}" ToolTip="上移选中项目" Click="MoveUp_Click">
+                                            <Path Data="M 3,10 L 8,5 L 13,10 M 8,5 L 8,15"
+                                                  Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                                  StrokeThickness="1.6" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                                  Width="14" Height="14" Stretch="Uniform" />
+                                        </Button>
+                                        <Button Style="{StaticResource ToolbarIconButtonStyle}" ToolTip="下移选中项目" Click="MoveDown_Click">
+                                            <Path Data="M 3,6 L 8,11 L 13,6 M 8,1 L 8,11"
+                                                  Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                                  StrokeThickness="1.6" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                                  Width="14" Height="14" Stretch="Uniform" />
+                                        </Button>
+                                        <Border Width="1" Height="18" Background="#E2E8F0" Margin="3,8" />
+                                        <Button x:Name="SortMenuButton" Style="{StaticResource ToolbarSortButtonStyle}"
+                                                ToolTip="选择排序方式；排序后仍可继续拖动微调" Click="SortMenuButton_Click">
+                                            <Button.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Header="名称 ↑" Tag="名称|asc" Click="Sort_Click" />
+                                                    <MenuItem Header="名称 ↓" Tag="名称|desc" Click="Sort_Click" />
+                                                    <Separator />
+                                                    <MenuItem Header="扩展名 ↑" Tag="扩展名|asc" Click="Sort_Click" />
+                                                    <MenuItem Header="扩展名 ↓" Tag="扩展名|desc" Click="Sort_Click" />
+                                                    <Separator />
+                                                    <MenuItem Header="修改时间 ↑" Tag="修改时间|asc" Click="Sort_Click" />
+                                                    <MenuItem Header="修改时间 ↓" Tag="修改时间|desc" Click="Sort_Click" />
+                                                    <MenuItem Header="大小 ↑" Tag="大小|asc" Click="Sort_Click" />
+                                                    <MenuItem Header="大小 ↓" Tag="大小|desc" Click="Sort_Click" />
+                                                    <Separator />
+                                                    <MenuItem Header="撤销排序" Click="UndoOrder_Click" />
+                                                </ContextMenu>
+                                            </Button.ContextMenu>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="排序" Foreground="#667085" />
+                                                <TextBlock Text="{Binding SortLabel, Mode=OneWay}" FontWeight="SemiBold" Margin="7,0,0,0" />
+                                                <Path Data="M 2,3 L 6,7 L 10,3" Stroke="#7C8797" StrokeThickness="1.4"
+                                                      Width="10" Height="7" Stretch="Uniform" Margin="8,1,0,0" />
+                                            </StackPanel>
+                                        </Button>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+
+                            <DataGrid x:Name="FilesGrid" Grid.Row="1"
+                                      ItemsSource="{Binding ItemsView}"
+                                      AutoGenerateColumns="False"
+                                      CanUserAddRows="False"
+                                      CanUserDeleteRows="False"
+                                      CanUserReorderColumns="True"
+                                      CanUserResizeRows="False"
+                                      CanUserSortColumns="False"
+                                      SelectionMode="Extended"
+                                      SelectionUnit="FullRow"
+                                      HeadersVisibility="Column"
+                                      GridLinesVisibility="Horizontal"
+                                      HorizontalGridLinesBrush="#EEF1F5"
+                                      BorderThickness="0"
+                                      RowHeight="52"
+                                      ColumnHeaderHeight="40"
+                                      Background="White"
+                                      EnableRowVirtualization="True"
+                                      EnableColumnVirtualization="True"
+                                      VirtualizingPanel.IsVirtualizing="True"
+                                      VirtualizingPanel.VirtualizationMode="Recycling"
+                                      ScrollViewer.CanContentScroll="True"
+                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                      PreviewMouseLeftButtonDown="FilesGrid_PreviewMouseLeftButtonDown"
+                                      PreviewMouseMove="FilesGrid_PreviewMouseMove"
+                                      DragOver="FilesGrid_DragOver"
+                                      Drop="FilesGrid_Drop"
+                                      KeyDown="FilesGrid_KeyDown">
+                                <DataGrid.Resources>
+                                    <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource ModernVerticalScrollBarStyle}" />
+                                </DataGrid.Resources>
+                                <DataGrid.Columns>
+                                    <DataGridTemplateColumn Width="44">
+                                        <DataGridTemplateColumn.Header>
+                                            <CheckBox Style="{StaticResource SquareCheckBoxStyle}" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                      ToolTip="全选 / 全不选" IsThreeState="True"
+                                                      IsChecked="{Binding AllIncludedState, Mode=OneWay}" Click="HeaderCheckBox_Click" />
+                                        </DataGridTemplateColumn.Header>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <!-- IMPORTANT: no Checked/Unchecked handler. Binding init must never refresh CollectionView. -->
+                                                <CheckBox Style="{StaticResource SquareCheckBoxStyle}"
+                                                          IsChecked="{Binding IsIncluded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                          HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTextColumn Header="#" Binding="{Binding Preview.DisplayOrder, Mode=OneWay}" Width="54" IsReadOnly="True" />
+                                    <DataGridTemplateColumn Header="原名称" Width="2*" MinWidth="210">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Grid ToolTip="{Binding CurrentPath}" Margin="2,0">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="28" />
+                                                        <ColumnDefinition Width="*" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="{Binding KindGlyph}" Foreground="#8A94A3" FontSize="14" VerticalAlignment="Center" />
+                                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding CurrentName}" TextTrimming="CharacterEllipsis" Foreground="#4B5563" />
+                                                        <TextBlock Text="{Binding SourceFolderDisplay}" TextTrimming="CharacterEllipsis" FontSize="10.5" Foreground="#9AA3AF" Margin="0,2,0,0" />
+                                                    </StackPanel>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Header="新名称" Width="2.3*" MinWidth="230">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Preview.DisplayNewName, Mode=OneWay}"
+                                                           VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Padding="4,0">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="FontWeight" Value="SemiBold" />
+                                                            <Setter Property="Foreground" Value="#1F4E9B" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Preview.IsExcluded}" Value="True">
+                                                                    <Setter Property="FontWeight" Value="Normal" />
+                                                                    <Setter Property="Foreground" Value="{StaticResource ExcludedTextBrush}" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Preview.Status}" Value="无变化">
+                                                                    <Setter Property="FontWeight" Value="Medium" />
+                                                                    <Setter Property="Foreground" Value="#667085" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Preview.HasError}" Value="True">
+                                                                    <Setter Property="Foreground" Value="{StaticResource ErrorTextBrush}" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Header="状态" Width="100">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Border CornerRadius="8" Padding="8,4" HorizontalAlignment="Left" ToolTip="{Binding Preview.StatusToolTip}">
+                                                    <Border.Style>
+                                                        <Style TargetType="Border">
+                                                            <Setter Property="Background" Value="{StaticResource SuccessSoftBrush}" />
+                                                            <Setter Property="Visibility" Value="Visible" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Preview.Status}" Value="将改名">
+                                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Preview.HasWarning}" Value="True">
+                                                                    <Setter Property="Background" Value="{StaticResource WarningSoftBrush}" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Preview.HasError}" Value="True">
+                                                                    <Setter Property="Background" Value="{StaticResource ErrorSoftBrush}" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Preview.Status}" Value="未参与">
+                                                                    <Setter Property="Background" Value="#F2F4F7" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Preview.Status}" Value="无变化">
+                                                                    <Setter Property="Background" Value="#F2F4F7" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                    <TextBlock Text="{Binding Preview.Status, Mode=OneWay}" FontSize="11">
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="TextBlock">
+                                                                <Setter Property="Foreground" Value="{StaticResource SuccessTextBrush}" />
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Preview.HasWarning}" Value="True">
+                                                                        <Setter Property="Foreground" Value="{StaticResource WarningTextBrush}" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Preview.Status}" Value="未参与">
+                                                                        <Setter Property="Foreground" Value="#667085" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Preview.Status}" Value="无变化">
+                                                                        <Setter Property="Foreground" Value="#667085" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Preview.HasError}" Value="True">
+                                                                        <Setter Property="Foreground" Value="{StaticResource ErrorTextBrush}" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
+                                                </Border>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <Border Grid.RowSpan="2" Background="#FAFFFFFF" Visibility="Collapsed" x:Name="EmptyState" Panel.ZIndex="10">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Border Width="54" Height="54" CornerRadius="14" Background="{StaticResource PrimarySoftBrush}">
+                                        <TextBlock Text="＋" FontSize="28" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource PrimaryBrush}" />
+                                    </Border>
+                                    <TextBlock Text="将文件或文件夹拖到这里" FontSize="16" FontWeight="SemiBold" Margin="0,14,0,4" Foreground="{StaticResource StrongTextBrush}" />
+                                    <TextBlock Text="可一次添加多个文件，并通过拖动快速调整顺序" Foreground="{StaticResource MutedTextBrush}" HorizontalAlignment="Center" />
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,18,0,0">
+                                        <Button Content="添加文件夹" Style="{StaticResource BaseButtonStyle}" Click="AddFolder_Click" />
+                                        <Button Content="添加文件" Style="{StaticResource PrimaryButtonStyle}" Margin="8,0,0,0" Click="AddFiles_Click" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <!-- V0.3 rules panel: product-oriented sections + subdued modern scrollbar -->
+                    <Border Grid.Column="2" Style="{StaticResource CardStyle}" Padding="0" ClipToBounds="True">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="74" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <Border BorderBrush="{StaticResource HairlineBrush}" BorderThickness="0,0,0,1">
+                                <Grid Margin="16,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="重命名规则" FontSize="15" FontWeight="SemiBold" Foreground="{StaticResource StrongTextBrush}" />
+                                        <TextBlock Text="修改规则后自动刷新左侧预览" FontSize="11" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
+                                    </StackPanel>
+                                    <Border Grid.Column="1" Background="{StaticResource PrimarySoftBrush}" CornerRadius="8" Padding="8,4" VerticalAlignment="Center">
+                                        <TextBlock Text="实时预览" FontSize="10.5" Foreground="{StaticResource PrimaryBrush}" FontWeight="Medium" />
+                                    </Border>
+                                </Grid>
+                            </Border>
+
+                            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" PanningMode="VerticalOnly">
+                                <ScrollViewer.Resources>
+                                    <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource ModernVerticalScrollBarStyle}" />
+                                </ScrollViewer.Resources>
+                                <StackPanel Margin="14,14,8,16">
+                                    <Border Style="{StaticResource RuleSectionStyle}">
+                                        <StackPanel>
+                                            <Grid>
+                                                <StackPanel>
+                                                    <TextBlock Text="基础命名" Style="{StaticResource SectionTitleStyle}" />
+                                                    <TextBlock Text="决定文件名的主体结构" Style="{StaticResource SectionHintStyle}" Margin="0,3,0,0" />
+                                                </StackPanel>
+                                            </Grid>
+
+                                            <TextBlock Text="基础名称" Style="{StaticResource FieldLabelStyle}" Margin="0,13,0,6" />
+                                            <TextBox Text="{Binding BaseName, UpdateSourceTrigger=PropertyChanged}" />
+
+                                            <TextBlock Text="原名称" Style="{StaticResource FieldLabelStyle}" Margin="0,12,0,6" />
+                                            <ComboBox Style="{StaticResource ReliableComboBoxStyle}" ItemsSource="{Binding OriginalModes}" SelectedItem="{Binding OriginalMode}" />
+
+                                            <Grid Margin="0,12,0,0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="10" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel>
+                                                    <TextBlock Text="前缀" Style="{StaticResource FieldLabelStyle}" />
+                                                    <TextBox Text="{Binding Prefix, UpdateSourceTrigger=PropertyChanged}" />
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="2">
+                                                    <TextBlock Text="后缀" Style="{StaticResource FieldLabelStyle}" />
+                                                    <TextBox Text="{Binding Suffix, UpdateSourceTrigger=PropertyChanged}" />
+                                                </StackPanel>
+                                            </Grid>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border Style="{StaticResource RuleSectionStyle}">
+                                        <StackPanel>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel>
+                                                    <TextBlock Text="连续编号" Style="{StaticResource SectionTitleStyle}" />
+                                                    <TextBlock Text="编号严格跟随左侧当前顺序" Style="{StaticResource SectionHintStyle}" Margin="0,3,0,0" />
+                                                </StackPanel>
+                                                <CheckBox Grid.Column="1" Content="启用" IsChecked="{Binding SequenceEnabled}" VerticalAlignment="Top" />
+                                            </Grid>
+
+                                            <Grid Margin="0,13,0,0" IsEnabled="{Binding SequenceEnabled}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="8" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="8" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel>
+                                                    <TextBlock Text="起始" Style="{StaticResource FieldLabelStyle}" />
+                                                    <TextBox Text="{Binding SequenceStart, UpdateSourceTrigger=LostFocus}" />
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="2">
+                                                    <TextBlock Text="步长" Style="{StaticResource FieldLabelStyle}" />
+                                                    <TextBox Text="{Binding SequenceStep, UpdateSourceTrigger=LostFocus}" />
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="4">
+                                                    <TextBlock Text="位数" Style="{StaticResource FieldLabelStyle}" />
+                                                    <TextBox Text="{Binding SequenceDigits, UpdateSourceTrigger=LostFocus}" />
+                                                </StackPanel>
+                                            </Grid>
+
+                                            <Grid Margin="0,12,0,0" IsEnabled="{Binding SequenceEnabled}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="10" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel>
+                                                    <TextBlock Text="位置" Style="{StaticResource FieldLabelStyle}" />
+                                                    <ComboBox Style="{StaticResource ReliableComboBoxStyle}" ItemsSource="{Binding SequencePositions}" SelectedItem="{Binding SequencePosition}" />
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="2">
+                                                    <TextBlock Text="分隔符" Style="{StaticResource FieldLabelStyle}" />
+                                                    <TextBox Text="{Binding Separator, UpdateSourceTrigger=PropertyChanged}" />
+                                                </StackPanel>
+                                            </Grid>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!-- Optional modules are enabled from Settings, but edited where users expect: in the rename rule panel. -->
+                                    <Border>
+                                        <Border.Style>
+                                            <Style TargetType="Border" BasedOn="{StaticResource RuleSectionStyle}">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding EnableFindReplace}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <StackPanel>
+                                            <TextBlock Text="查找替换" Style="{StaticResource SectionTitleStyle}" />
+                                            <TextBlock Text="处理被保留的原名称部分；扩展名保持原样" Style="{StaticResource SectionHintStyle}" Margin="0,3,0,0" />
+                                            <Grid Margin="0,13,0,0" IsEnabled="{Binding UsesOriginalName}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="10" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel>
+                                                    <TextBlock Text="查找" Style="{StaticResource FieldLabelStyle}" />
+                                                    <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="2">
+                                                    <TextBlock Text="替换为" Style="{StaticResource FieldLabelStyle}" />
+                                                    <TextBox Text="{Binding ReplaceText, UpdateSourceTrigger=PropertyChanged}" />
+                                                </StackPanel>
+                                            </Grid>
+                                            <TextBlock Margin="0,9,0,0" FontSize="10.5" TextWrapping="Wrap" LineHeight="16">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Foreground" Value="#7A8494" />
+                                                        <Setter Property="Text" Value="例：IMG_001，查找 IMG_，替换为 Photo_ → Photo_001。" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding UsesOriginalName}" Value="False">
+                                                                <Setter Property="Foreground" Value="#B54708" />
+                                                                <Setter Property="Text" Value="当前未保留原名称，因此查找替换暂不生效。" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border>
+                                        <Border.Style>
+                                            <Style TargetType="Border" BasedOn="{StaticResource RuleSectionStyle}">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding EnableCaseConversion}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <StackPanel>
+                                            <TextBlock Text="大小写转换" Style="{StaticResource SectionTitleStyle}" />
+                                            <TextBlock Text="作用于最终新名称主体；扩展名保持原样" Style="{StaticResource SectionHintStyle}" Margin="0,3,0,0" />
+                                            <ComboBox Style="{StaticResource ReliableComboBoxStyle}" Margin="0,13,0,0"
+                                                      ItemsSource="{Binding CaseModes}" SelectedItem="{Binding CaseMode}" />
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <!-- Status / primary action -->
+                <Border Grid.Row="2" Background="White" BorderBrush="{StaticResource HairlineBrush}" BorderThickness="0,1,0,0">
+                    <Grid Margin="24,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Ellipse Width="7" Height="7" Margin="0,0,8,0">
+                                <Ellipse.Style>
+                                    <Style TargetType="Ellipse">
+                                        <Setter Property="Fill" Value="#12B76A" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding HasWarnings}" Value="True">
+                                                <Setter Property="Fill" Value="{StaticResource WarningTextBrush}" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding HasErrors}" Value="True">
+                                                <Setter Property="Fill" Value="{StaticResource ErrorTextBrush}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Ellipse.Style>
+                            </Ellipse>
+                            <TextBlock Text="{Binding StatusText, Mode=OneWay}" Foreground="{StaticResource MutedTextBrush}" VerticalAlignment="Center" />
+                            <TextBlock Text="  ·  正在生成预览…" Foreground="{StaticResource PrimaryBrush}" Margin="2,0,0,0">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsPreviewBusy}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                            <Button Content="撤销上次" Style="{StaticResource BaseButtonStyle}"
+                                    IsEnabled="{Binding CanUndoLastTransaction}" Click="UndoRename_Click"
+                                    ToolTip="撤销最近一次仍满足安全条件的重命名事务" MinWidth="96" />
+                            <Button Content="执行重命名" Style="{StaticResource PrimaryButtonStyle}"
+                                    IsEnabled="{Binding CanExecuteRename}" Click="ExecuteRename_Click"
+                                    Margin="8,0,0,0" MinWidth="132" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Grid>
+
+        <!-- Settings chooses which optional modules exist; parameters are edited in-context on the main panel. -->
+        <Grid x:Name="SettingsOverlay" Grid.Row="1" Grid.ColumnSpan="2" Panel.ZIndex="100" Visibility="Collapsed">
+            <Border Background="#360F172A" MouseLeftButtonDown="SettingsBackdrop_MouseLeftButtonDown" />
+            <Border x:Name="SettingsCard" Width="560" Height="420" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Background="White" BorderBrush="#E4E9F0" BorderThickness="1" CornerRadius="14">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="72" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Border BorderBrush="{StaticResource HairlineBrush}" BorderThickness="0,0,0,1">
+                        <Grid Margin="22,0,16,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="设置" FontSize="19" FontWeight="SemiBold" Foreground="{StaticResource StrongTextBrush}" />
+                                <TextBlock Text="选择需要显示在主界面的可选功能" FontSize="11.5" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
+                            </StackPanel>
+                            <Button Grid.Column="1" Content="×" Style="{StaticResource SettingsCloseButtonStyle}" Click="SettingsClose_Click" ToolTip="关闭" />
+                        </Grid>
+                    </Border>
+
+                    <StackPanel Grid.Row="1" Margin="22,20,22,22">
+                        <TextBlock Text="可选功能" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource StrongTextBrush}" />
+                        <TextBlock Text="启用后，对应规则会出现在右侧重命名面板；关闭后会完全隐藏且不参与预览。"
+                                   TextWrapping="Wrap" Style="{StaticResource SectionHintStyle}" Margin="0,5,0,16" />
+
+                        <Border Style="{StaticResource RuleSectionStyle}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="查找替换" Style="{StaticResource SectionTitleStyle}" />
+                                    <TextBlock Text="按文字查找并替换被保留的原文件名部分" Style="{StaticResource SectionHintStyle}" Margin="0,3,0,0" />
+                                </StackPanel>
+                                <CheckBox Grid.Column="1" Content="显示" IsChecked="{Binding EnableFindReplace}" VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+
+                        <Border Style="{StaticResource RuleSectionStyle}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="大小写转换" Style="{StaticResource SectionTitleStyle}" />
+                                    <TextBlock Text="统一最终文件名主体的大小写格式" Style="{StaticResource SectionHintStyle}" Margin="0,3,0,0" />
+                                </StackPanel>
+                                <CheckBox Grid.Column="1" Content="显示" IsChecked="{Binding EnableCaseConversion}" VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</ui:FluentWindow>

@@ -1,0 +1,22 @@
+# Visual Studio / .NET
+.vs/
+**/bin/
+**/obj/
+*.user
+*.suo
+
+# 构建、发布与压力测试输出
+artifacts/
+
+# Python 缓存
+**/__pycache__/
+*.py[cod]
+
+# 本地历史版本，不属于仓库
+回收站/
+
+# 操作系统与编辑器临时文件
+.DS_Store
+Thumbs.db
+*.tmp
+*.bak

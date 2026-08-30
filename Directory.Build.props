@@ -1,0 +1,17 @@
+<Project>
+  <PropertyGroup>
+    <Configurations>Debug;Release;Release-Internal;Release-Public</Configurations>
+    <BatchRenamerBuildFlavor Condition="'$(BatchRenamerBuildFlavor)' == '' and '$(Configuration)' == 'Release-Internal'">Internal</BatchRenamerBuildFlavor>
+    <BatchRenamerBuildFlavor Condition="'$(BatchRenamerBuildFlavor)' == ''">Public</BatchRenamerBuildFlavor>
+    <Optimize Condition="'$(Configuration)' == 'Release-Internal' or '$(Configuration)' == 'Release-Public'">true</Optimize>
+    <DebugType Condition="'$(Configuration)' == 'Release-Internal' or '$(Configuration)' == 'Release-Public'">portable</DebugType>
+    <TreatWarningsAsErrors Condition="'$(Configuration)' == 'Release-Internal' or '$(Configuration)' == 'Release-Public'">true</TreatWarningsAsErrors>
+    <DefineConstants Condition="'$(BatchRenamerBuildFlavor)' == 'Internal'">$(DefineConstants);INTERNAL_TEST_TOOLS</DefineConstants>
+  </PropertyGroup>
+
+  <Target Name="ValidateBatchRenamerBuildFlavor" BeforeTargets="PrepareForBuild">
+    <Error
+      Condition="'$(BatchRenamerBuildFlavor)' != 'Internal' and '$(BatchRenamerBuildFlavor)' != 'Public'"
+      Text="BatchRenamerBuildFlavor 必须为 Internal 或 Public。" />
+  </Target>
+</Project>

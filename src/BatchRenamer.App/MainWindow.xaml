@@ -6,6 +6,7 @@
                  xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
                  mc:Ignorable="d"
                  Title="easy重命名"
+                 Icon="Assets/BatchRenamer.ico"
                  Width="1380" Height="860"
                  MinWidth="1120" MinHeight="720"
                  WindowStartupLocation="CenterScreen"

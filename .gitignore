@@ -8,6 +8,9 @@
 # 构建、发布与压力测试输出
 artifacts/
 
+# 用户提供的批准资产包；仓库只保留接入后的单一权威 ICO
+BatchRenamer_Final_Icon_Approved/
+
 # Python 缓存
 **/__pycache__/
 *.py[cod]

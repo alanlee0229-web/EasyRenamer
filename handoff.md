@@ -2,7 +2,7 @@
 
 ## 当前目标
 
-PS-03 Release Identity / Branding 已完成本地实现与验收，当前分支为 `productization/ps03-release-identity`，待中文提交、推送并创建 PR。
+PS-03 Release Identity / Branding 已完成实现与验收，当前分支为 `productization/ps03-release-identity`；PR #3 待评审，不自动合并。
 
 ## 权威信息
 
@@ -26,6 +26,7 @@ PS-03 Release Identity / Branding 已完成本地实现与验收，当前分支�
 - 仓库没有用户批准的正式 `.ico`；`ICON_ASSET_STATUS = PENDING`，接入边界见 `docs/PS03_RELEASE_IDENTITY.md`。
 - Transaction Core 文件变更 0；Transaction 语义变更 0；第二 mutation 路径 0。
 - EXE、ZIP、`bin/obj`、`artifacts` 均不提交。
+- PS-03 实现提交：`32d3482`；PR：https://github.com/alanlee0229-web/EasyRenamer/pull/3。
 
 ## 固定决策
 

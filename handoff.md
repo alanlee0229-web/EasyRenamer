@@ -2,7 +2,7 @@
 
 ## 当前目标
 
-PS-04 GitHub Presentation / Community Foundation 已完成本地实现与验收，当前分支为 `productization/ps04-github-foundation`，待中文提交、推送并创建 PR。
+PS-04 GitHub Presentation / Community Foundation 已完成实现与验收，当前分支为 `productization/ps04-github-foundation`；PR #4 待评审，不自动合并。
 
 ## 权威信息
 
@@ -25,6 +25,7 @@ PS-04 GitHub Presentation / Community Foundation 已完成本地实现与验收�
 - Canonical Public Purity 与 Negative Control：PASS。
 - Production code 文件变更 0；Transaction Core/Purity Gate 变更 0；语义变更 0。
 - EXE、ZIP、`bin/obj`、`artifacts` 均不提交。
+- PS-04 实现提交：`9e14402`；PR：https://github.com/alanlee0229-web/EasyRenamer/pull/4。
 
 ## 固定决策
 

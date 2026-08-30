@@ -1,0 +1,61 @@
+name: Compatibility Problem
+description: Report Windows, runtime, display, filesystem, or packaging compatibility problems.
+title: "[Compatibility] "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not upload private files or reveal personal paths. Use neutral sample names in screenshots and logs.
+  - type: input
+    id: version
+    attributes:
+      label: BatchRenamer version and build flavor
+      placeholder: 1.0.0 / Release-Public
+    validations:
+      required: true
+  - type: input
+    id: windows
+    attributes:
+      label: Windows edition, version, and architecture
+      placeholder: Windows 11 Pro 24H2 x64
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Compatibility area
+      options:
+        - Application startup
+        - Display or DPI
+        - Filesystem or drive type
+        - Portable packaging
+        - Security software interaction
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Relevant environment details
+      description: Include drive/filesystem type or display scaling when relevant, using redacted paths.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction and observed behavior
+    validations:
+      required: true
+  - type: textarea
+    id: workaround
+    attributes:
+      label: Known workaround
+      description: Leave blank if none.
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy confirmation
+      options:
+        - label: I removed private filenames, personal paths, and unredacted diagnostic data.
+          required: true

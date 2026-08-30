@@ -2,7 +2,7 @@
 
 ## 当前目标
 
-PS-02 Public Build Purity Gate 已完成本地实现与验收，当前分支为 `productization/ps02-public-purity-gate`，待中文提交、推送并创建 PR。
+PS-02 Public Build Purity Gate 已完成实现与验收，当前分支为 `productization/ps02-public-purity-gate`；PR #2 待评审，不自动合并。
 
 ## 权威信息
 
@@ -25,6 +25,7 @@ PS-02 Public Build Purity Gate 已完成本地实现与验收，当前分支为 
 - Internal 编译包含 4 个 `InternalTools` 源文件；Public 包含 0 个。Public 身份为 `easy重命名 / BatchRenamer`、`1.0.0`。
 - Transaction Core 文件变更 0；Transaction 语义变更 0；第二 mutation 路径 0。
 - EXE、ZIP、`bin/obj`、`artifacts` 均不提交。
+- PS-02 实现提交：`be9db8d`；PR：https://github.com/alanlee0229-web/EasyRenamer/pull/2。
 
 ## 固定决策
 

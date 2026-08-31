@@ -4,7 +4,7 @@
 
 | Reserved path | Status | Acceptance boundary |
 | --- | --- | --- |
-| `main-window.png` | `SCREENSHOT_STATUS = PENDING` | 真实 Release-Public UI；8–15 个中性示例文件；清晰 before → after；无私人路径；主表格和规则区可见 |
+| `main-window.png` | `SCREENSHOT_STATUS = READY` | 真实 Release-Public UI（v1.0.0 RC，20 个中性示例文件）；清晰 before → after；无私人路径；主表格和规则区可见；已通过 9/9 视觉审查 |
 | `demo.gif` | `DEMO_GIF_STATUS = PENDING` | 真实应用录制；8–15 秒；Import → Rule → Preview → Execute → Success |
 | `icon-512.png` | `ICON_ASSET_STATUS = PENDING` | 仅由用户批准的正式品牌资产导出 |
 

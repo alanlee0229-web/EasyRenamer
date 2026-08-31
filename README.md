@@ -7,7 +7,9 @@
 
 > v1.0.0 Release is coming. The Releases page is the future official download location; no production binary is published yet.
 
-`SCREENSHOT_STATUS = PENDING` — the reserved path is `docs/assets/main-window.png`. It will contain a real Release-Public screenshot, never a mockup or AI-generated substitute. See the [asset policy](docs/assets/README.md).
+`SCREENSHOT_STATUS = READY` — `docs/assets/main-window.png` is a real Release-Public screenshot of the v1.0.0 Release Candidate, never a mockup or AI-generated substitute. See the [asset policy](docs/assets/README.md).
+
+![easy重命名 main window](docs/assets/main-window.png)
 
 - **Fast Preview** — inspect clear before → after names before any file changes.
 - **Safe Transactions** — execute through a frozen plan and two-phase transaction.

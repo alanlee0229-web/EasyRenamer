@@ -123,10 +123,10 @@ def validate_claims_and_statuses() -> None:
         "A modern, safe and extensible",
         "batch renaming toolkit for Windows.",
         "Download for Windows",
+        "v1.0.0 is now available",
         "20,000 real-file transaction/undo stress tested",
-        "SCREENSHOT_STATUS = PENDING",
+        "SCREENSHOT_STATUS = READY",
         "DEMO_GIF_STATUS = PENDING",
-        "ICON_ASSET_STATUS = PENDING",
     ]
     for phrase in required_readme:
         if phrase not in readme:
@@ -203,6 +203,8 @@ def main() -> int:
         "CONTRIBUTING.md",
         "docs/ROADMAP.md",
         "docs/SAFETY_ARCHITECTURE.md",
+        "docs/releases/RELEASE_NOTES_v1.0.0.md",
+        "docs/releases/V1_ENGINEERING_QUALIFICATION.md",
         ".github/pull_request_template.md",
     ]
     for relative in required_files:

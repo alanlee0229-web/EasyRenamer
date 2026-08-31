@@ -47,11 +47,18 @@ Final Release = PUBLISHED（2026-08-31，https://github.com/alanlee0229-web/Easy
 - Git 提交、分支和 PR 文案使用中文；不直接推送 `main`。
 - PR #8 已合并（merge commit `86702fa`），仅承载 PS-06 release docs；不改变正式 v1.0.0 Product Source Commit。
 
-## Publish 前待办（不影响 RELEASE QUALIFIED）
+## 发布后可选待办
 
 - Screenshot：READY（真实 Public RC 主界面截图已 9/9 视觉审查通过，冻结于 `docs/assets/main-window.png`，README 已引用）。
 - Demo GIF：PENDING。
 - Discussions：USER_ACTION_REQUIRED（用户在 GitHub Settings 手动启用）。
+
+## DOCUMENTATION CLEANUP
+
+- Completed：2026-08-31（`maintenance/v1-doc-cleanup` 分支）。
+- 已创建唯一工程资格总结：`docs/releases/V1_ENGINEERING_QUALIFICATION.md`。
+- 已清理工作树中的历史阶段性文档（任务提示词、INTERNAL_AUDIT / WINDOWS_ACCEPTANCE 系列、PS 阶段报告、旧 UI / 架构 / roadmap 文档、frozen_reference、根目录历史 SHA256SUMS.txt）；永久约束已迁入 `docs/SAFETY_ARCHITECTURE.md`。
+- 历史过程文档一律通过 Git history 查阅；不修改 Release assets 与 tag。
 
 ## 下一步
 

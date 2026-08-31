@@ -73,7 +73,7 @@ Verify the downloaded files with `SHA256SUMS.txt` on the release page.
 - The release stress gate has completed a 20,000 real-file Planner → Execute → Startup Scan → Undo → idempotence cycle in an isolated temporary workspace.
 - The Public Build Purity Gate verifies that Internal QA code, commands, resources, dependencies, identity, and extra files do not enter the Public artifact.
 
-Qualification evidence describes tested engineering state; it is not a claim that v1.0.0 has already been publicly released.
+Qualification evidence describes the tested engineering state behind this release; current release status is recorded on the GitHub Releases page.
 
 ## Roadmap
 
@@ -98,12 +98,12 @@ Developer verification entry points:
 dotnet build BatchRenamer.UIPrototype.sln -c Release-Public -p:TreatWarningsAsErrors=true
 dotnet run --no-build -c Release-Public --project tools\BatchRenamer.Core.SmokeTests\BatchRenamer.Core.SmokeTests.csproj
 powershell -ExecutionPolicy Bypass -File tools\verify_public_build.ps1
-D:\DATA\tpredict\python.exe tools\validate_repository_docs.py
+python tools\validate_repository_docs.py
 ```
 
 `DEMO_GIF_STATUS = PENDING` — the reserved path is `docs/assets/demo.gif`, sourced only from a real application recording.
 
-`APP_ICON_STATUS = APPROVED_AND_INTEGRATED` — Release-Public and Release-Internal use the same approved Windows icon. See [Release Identity / Branding](docs/PS03_RELEASE_IDENTITY.md). `ICON_ASSET_STATUS = PENDING` applies only to the separate website-facing `icon-512.png`, which is not substituted with an unapproved derivative.
+`APP_ICON_STATUS = APPROVED_AND_INTEGRATED` — Release-Public and Release-Internal use the same approved Windows icon. See [V1 Engineering Qualification](docs/releases/V1_ENGINEERING_QUALIFICATION.md). `ICON_ASSET_STATUS = PENDING` applies only to the separate website-facing `icon-512.png`, which is not substituted with an unapproved derivative.
 
 ## License
 

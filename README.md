@@ -5,9 +5,9 @@
 
 [**Download for Windows**](https://github.com/alanlee0229-web/EasyRenamer/releases)
 
-> v1.0.0 Release is coming. The Releases page is the future official download location; no production binary is published yet.
+> v1.0.0 is now available. The Releases page is the official download location.
 
-`SCREENSHOT_STATUS = READY` — `docs/assets/main-window.png` is a real Release-Public screenshot of the v1.0.0 Release Candidate, never a mockup or AI-generated substitute. See the [asset policy](docs/assets/README.md).
+`SCREENSHOT_STATUS = READY` — `docs/assets/main-window.png` is a real Release-Public screenshot of v1.0.0, never a mockup or AI-generated substitute. See the [asset policy](docs/assets/README.md).
 
 ![easy重命名 main window](docs/assets/main-window.png)
 
@@ -59,14 +59,12 @@ Read the [Safety Architecture](docs/SAFETY_ARCHITECTURE.md) and [Security Policy
 
 ## Portable usage
 
-After the official v1.0.0 Release is published:
-
 1. Open the [Releases page](https://github.com/alanlee0229-web/EasyRenamer/releases).
 2. Download the Windows portable ZIP.
 3. Extract it to a normal writable folder.
 4. Run `BatchRenamer.exe`.
 
-Until PS-07 completes, do not treat local qualification artifacts or hashes as a final Release.
+Verify the downloaded files with `SHA256SUMS.txt` on the release page.
 
 ## Performance and qualification evidence
 

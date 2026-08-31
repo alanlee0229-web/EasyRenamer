@@ -2,7 +2,7 @@
 
 ## 当前目标
 
-PS-07 Final Public Release Gate 已完成并通过；v1.0.0 已具备正式公开发布资格，等待用户最终确认 Publish。
+v1.0.0 已正式发布（2026-08-31）。项目进入公开发布后维护阶段。
 
 ## 权威信息
 
@@ -17,7 +17,7 @@ PS-07 Final Public Release Gate 已完成并通过；v1.0.0 已具备正式公�
 ```text
 PS-07 = PASS
 v1.0.0 = RELEASE QUALIFIED
-Final Release = NOT YET PUBLISHED（Draft 已就绪）
+Final Release = PUBLISHED（2026-08-31，https://github.com/alanlee0229-web/EasyRenamer/releases/tag/v1.0.0）
 ```
 
 - Frozen RC Drift：pre-gate 与 post-gate 双重复核，五文件 SHA256 全部与 PS-06 一致，`RC_FREEZE=PASS`。
@@ -33,12 +33,12 @@ Final Release = NOT YET PUBLISHED（Draft 已就绪）
 - ZIP SHA256：`9FA2C33A6D4B3339FD763FB4077F1FD9374DF3DB4846BFFB276808C847D0DECB`
 - RC1 冻结目录：`artifacts/release/v1.0.0-rc1/`（继续只读，不得 rebuild / republish / re-zip / sign / 改名 / 修改 metadata）。
 
-## GitHub Draft Release
+## GitHub 正式 Release（已发布）
 
-- Tag：`v1.0.0`；Target：`a42b5a887a7e79580473291614fac3a64825d3ab`；State：DRAFT。
+- Tag：`v1.0.0`（已验证指向 `a42b5a887a7e79580473291614fac3a64825d3ab`）；发布时间 2026-08-31。
 - 4 个冻结资产全部 uploaded，远端 SHA256 digest 与冻结 Hash 完全一致（EXE / ZIP / SHA256SUMS / RELEASE_MANIFEST）。
 - Release body = 冻结 Release Notes + Unsigned/SmartScreen 提示（中英双语）；冻结 `RELEASE_NOTES_v1.0.0.md` 本体未改动。
-- 不得重新上传或替换已有 assets；Publish 由用户最终确认。
+- 不得重新上传或替换已有 assets；如需变更须走新版本流程。
 
 ## 固定决策
 
@@ -55,4 +55,4 @@ Final Release = NOT YET PUBLISHED（Draft 已就绪）
 
 ## 下一步
 
-用户最终确认后 Publish Draft Release（tag `v1.0.0` 正式生效并指向 `a42b5a8`）。本文只保留最新状态与关键决策。
+v1.0.0 已上线。后续可选：Demo GIF、GitHub Discussions 启用（用户手动）、网站图标 icon-512.png。下一个版本（v1.0.1+）走正常 PR → 修复 → RC → Gate 流程，禁止直接修改已发布 v1.0.0 资产。本文只保留最新状态与关键决策。

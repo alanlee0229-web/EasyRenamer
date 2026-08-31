@@ -64,9 +64,21 @@ Transaction session lease 和 catalog lease 防止多个进程并行操作同一
 
 Internal QA 只能调用正式 Preview、Planner 与 Transaction API。Release-Public 在编译阶段排除 `InternalTools`，并由 Public Build Purity Gate 验证类型、命令、资源、依赖、身份和发布目录。
 
-## 相关设计文档
+## 身份与路径语义永久约束
 
-- [Validation Architecture](VALIDATION_ARCHITECTURE_V0.4.md)
-- [Rename Planner Architecture](RENAME_PLANNER_ARCHITECTURE_V0.5.md)
-- [Transaction Foundation](TRANSACTION_FOUNDATION_V0.6.0.md)
-- [Public Build Purity Gate](PS02_PUBLIC_BUILD_PURITY_GATE.md)
+- `NamespaceIdentity` 用于导入去重、目标路径判等与批次冲突；`FileIdentity` 只用于执行前 / Recovery 的对象替换 Guard，不得互相替代，也不使用文件内容 Hash。
+- 同一 NTFS 文件对象的多个 Hard Link 是多个独立目录项，允许同时导入并分别改名。
+- 路径比较必须经 `IPathSemanticsProvider` 获取目录级大小写语义，禁止全局写死 `OrdinalIgnoreCase`；无法可靠确认语义时保守失败（fail closed / 结构化 `FILESYSTEM_SEMANTICS_UNKNOWN`），不伪装成可靠结果。
+
+## Frozen Plan 永久约束
+
+- Temp 必须位于 `.~br-` 保留 namespace，与 Source / Target 不同、批次内唯一、执行前确认不存在；普通 UI 永不展示 TempPath。
+- Plan invariants：Source / Temp / Target 各自唯一；Temp 不得与任何 Source / Target 冲突；V1 中三者必须同目录；`A↔B`、三向循环的 Source / Target 交叉合法；Ordinal 从 0 连续。
+- `plan.json` 持久化必须走"临时文件 → Flush(true) → 原子替换 → 回读校验 SHA256"流程；同一 TransactionId 目录已存在时拒绝覆盖。
+- 任何 UI 状态变化（规则、勾选、导入、排序、拖动）必须立即废弃已准备的 Plan；Planner 计算期间输入变化时返回 `INPUT_CHANGED_DURING_PLANNING`，旧计划不得进入执行。
+- `BatchRenamer.Transaction` 不依赖 WPF、不接收 `RenameRuleSet`、不重新生成目标名称。
+
+## 相关权威文档
+
+- [V1 Authority Freeze](../BatchRenamer_V1_Authoritative_Freeze_20260830_DualFlavor_Update.md)
+- [V1 Engineering Qualification](releases/V1_ENGINEERING_QUALIFICATION.md)
